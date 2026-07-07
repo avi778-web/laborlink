@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaborLink - Full Screen Professional App Showcase</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Full Screen Screen Wrapper */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #f8fafc;
+            display: none;
+            flex-direction: column;
+            padding: 40px 24px;
+            z-index: 10;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* 1. Splash Screen - Full Screen Gradient */
+        #splash-screen {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        /* Logo Upgraded to display image beautifully */
+        .logo-animation {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin-bottom: 24px;
+            animation: pulse 1.5s infinite;
+            overflow: hidden; /* Ensures image corners stay smooth */
+        }
+
+        .logo-animation img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Keeps the logo proportions correct */
+            padding: 10px; /* Slight breathing room for the L icon shape */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .app-name {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .app-tagline {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Typography & Layout elements */
+        .screen-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .screen-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* 2. Language Selection Elements */
+        .lang-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .lang-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 22px 28px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .lang-btn:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .lang-btn.selected {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            color: #0369a1;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.1);
+        }
+
+        .lang-btn .native-script {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .lang-btn.selected .native-script {
+            color: #0284c7;
+            font-weight: 600;
+        }
+
+        /* Content Container for feature presentation */
+        .content-wrapper {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Feature Graphics Visuals */
+        .feature-illus {
+            width: 100%;
+            height: 240px;
+            background: #f1f5f9;
+            border-radius: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            position: relative;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-desc {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Highlight Boxes */
+        .badge-box {
+            background: #f0f9ff;
+            border-left: 6px solid #0284c7;
+            padding: 16px 20px;
+            border-radius: 0 20px 20px 0;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .badge-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 6px;
+        }
+
+        .badge-text {
+            font-size: 15px;
+            color: #334155;
+        }
+
+        /* Premium Verification Highlight Card */
+        .premium-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+            color: white;
+            padding: 28px;
+            border-radius: 24px;
+            margin-top: 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+
+        .verified-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 20px;
+            color: #f59e0b;
+            margin-bottom: 14px;
+        }
+
+        .verified-badge {
+            background: #f59e0b;
+            color: #1e1b4b;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Professional Premium Download Area */
+        .download-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            max-width: 500px;
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        .dl-btn {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #0f172a;
+            color: white;
+            padding: 20px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .dl-btn:hover {
+            background: #1e293b;
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+        }
+
+        .dl-btn.primary-dl {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border: 2px solid #38bdf8;
+        }
+
+        .dl-btn.primary-dl:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+            box-shadow: 0 15px 30px rgba(2, 132, 199, 0.4);
+        }
+
+        .dl-icon {
+            font-size: 32px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dl-text h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .dl-text p {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        /* Footer Fixed Layout Navigation Controllers */
+        .footer-nav {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 30px;
+        }
+
+        .next-btn {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s;
+            margin-left: auto;
+        }
+
+        .next-btn:hover {
+            background: #0369a1;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(2, 132, 199, 0.4);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            width: 32px;
+            background: #0284c7;
+            border-radius: 6px;
+        }
+
+        /* "Coming Soon" Modal Sheet Blur Overlay overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-card {
+            background: white;
+            padding: 40px;
+            border-radius: 32px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-overlay.show .popup-card {
+            transform: scale(1);
+        }
+
+        .popup-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .popup-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .popup-desc {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .popup-close-btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .popup-close-btn:hover {
+            background: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: SPLASH SCREEN (Logo Added Here) -->
+    <div class="screen active" id="splash-screen">
+        <div class="logo-animation">
+            <!-- Save your image file as logo.png in the same directory -->
+            <img src="c:\Users\Deepak Singh\Pictures\Screenshots\Screenshot 2026-07-07 103643.png" alt="LaborLink Logo">
+        </div>
+        <div class="app-name">LaborLink</div>
+        <div class="app-tagline">Connecting Skills, Building Futures</div>
+    </div>
+
+    <!-- SCREEN 2: LANGUAGE SELECTION -->
+    <div class="screen" id="lang-screen">
+        <div class="screen-title" id="lang-title">Select Language / भाषा चुनें</div>
+        <div class="screen-subtitle" id="lang-subtitle">Choose your language to proceed seamlessly</div>
+        
+        <div class="lang-container">
+            <div class="lang-btn selected" onclick="selectLanguage('hi')">
+                <span>Hindi</span>
+                <span class="native-script">हिंदी</span>
+            </div>
+            <div class="lang-btn" onclick="selectLanguage('en')">
+                <span>English</span>
+                <span class="native-script">English</span>
+            </div>
+            <div class="lang-btn" onclick="selectLanguage('ur')">
+                <span>Urdu</span>
+                <span class="native-script">اردو</span>
+            </div>
+            <div class="lang-btn" onclick="selectLanguage('bn')">
+                <span>Bengali</span>
+                <span class="native-script">বাংলা</span>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <button class="next-btn" onclick="navigate(1)">
+                <span class="next-txt">आगे बढ़ें</span> ➔
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: FEATURE PAGE 1 -->
+    <div class="screen" id="feature1-screen">
+        <div class="content-wrapper">
+            <div class="screen-title" id="f1-title">सबके लिए काम</div>
+            <div class="screen-subtitle" id="f1-subtitle">LaborLink Benefits</div>
+            
+            <div class="feature-illus">💰</div>
+            <div class="feature-desc" id="f1-desc">
+                चाहे आप कम पढ़े-लिखे हों या पूरी तरह शिक्षित, यह ऐप सभी को उनकी सुविधा के अनुसार पार्ट-टाइम या फुल-टाइम काम ढूंढने में मदद करता है। यहाँ रोज़ाना बेहतरीन कमाई के अवसर मिलते हैं।
+            </div>
+
+            <div class="badge-box">
+                <div class="badge-title" id="f1-b-title">कोई न्यूनतम शिक्षा अनिवार्य नहीं</div>
+                <div class="badge-text" id="f1-b-text">बिना किसी डिग्री के भी सीधे काम ढूंढना शुरू करें।</div>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <div class="carousel-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="next-btn" onclick="navigate(2)">➔</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: FEATURE PAGE 2 -->
+    <div class="screen" id="feature2-screen">
+        <div class="content-wrapper">
+            <div class="screen-title" id="f2-title">सिर्फ हुनर की कद्र</div>
+            <div class="screen-subtitle" id="f2-subtitle">Skills Over Degrees</div>
+            
+            <div class="feature-illus">⚡</div>
+            <div class="feature-desc" id="f2-desc">
+                यहाँ आपकी डिग्री मायने नहीं रखती, सिर्फ आपका हुनर (Skills) मायने रखता है। प्लंबर, इलेक्ट्रिशियन, कारपेंटर, या पेंटर - आपका काम ही आपकी असली पहचान है।
+            </div>
+
+            <div class="badge-box">
+                <div class="badge-title" id="f2-b-title">हुनरमंद भारत, आत्मनिर्भर भारत</div>
+                <div class="badge-text" id="f2-b-text">डायरेक्ट कस्टमर और बड़ी कंपनियों से ऑर्डर प्राप्त करें।</div>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <div class="carousel-dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="next-btn" onclick="navigate(3)">➔</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: FEATURE PAGE 3 -->
+    <div class="screen" id="feature3-screen">
+        <div class="content-wrapper">
+            <div class="screen-title" id="f3-title">ब्लू टिक (Blue Tick) प्रोफाइल</div>
+            <div class="screen-subtitle" id="f3-subtitle">Verified Top Listing</div>
+            
+            <div class="premium-card">
+                <div class="verified-header">
+                    <span class="verified-badge">✓</span>
+                    <span id="f3-card-title">वेरिफाइड充ब्लू टिक मेंबर</span>
+                </div>
+                <p style="font-size: 16px; opacity:0.9; line-height:1.6;" id="f3-card-desc">
+                    जब आप अपनी प्रोफाइल परं ब्लू टिक (Blue Tick) वेरिफिकेशन ऑन करते हैं, तो काम देने वाले (Hirers) जब भी किसी वर्कर को सर्च करेंगे, आपका नाम सबसे ऊपर (1st Position) दिखाई देगा! इससे आपको काम मिलने के चांस सबसे ज़्यादा होंगे।
+                </p>
+            </div>
+
+            <div class="badge-box" style="margin-top: auto;">
+                <div class="badge-title" id="f3-b-title">3 गुना ज्यादा काम के मौके</div>
+                <div class="badge-text" id="f3-b-text">टॉप पर आने से आपको सबसे पहले कॉल्स और ऑर्डर्स मिलेंगे।</div>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <div class="carousel-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="next-btn" onclick="navigate(4)">➔</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 6: DOWNLOAD SCREEN -->
+    <div class="screen" id="download-screen">
+        <div class="content-wrapper">
+            <div class="screen-title" id="dl-title">अभी ऐप डाउनलोड करें</div>
+            <div class="screen-subtitle" id="dl-subtitle">Start your professional journey today</div>
+            
+            <div class="feature-illus" style="height:160px; background: none; font-size: 96px; box-shadow: none;">🚀</div>
+            
+            <div class="download-container">
+                <button class="dl-btn primary-dl" onclick="showComingSoon()">
+                    <div class="dl-icon">📥</div>
+                    <div class="dl-text">
+                        <h4 id="btn-dl-apk">Download Android APK</h4>
+                        <p id="sub-dl-apk">Direct Professional Version (Free)</p>
+                    </div>
+                </button>
+
+                <button class="dl-btn" onclick="showComingSoon()">
+                    <div class="dl-icon">🤖</div>
+                    <div class="dl-text">
+                        <h4>Google Play Store</h4>
+                        <p>Get it on official marketplace</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <div class="carousel-dots" style="margin: 0 auto;">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL COMING SOON POPUP MODAL -->
+    <div class="popup-overlay" id="coming-soon-popup">
+        <div class="popup-card">
+            <div class="popup-icon">⏳</div>
+            <div class="popup-title" id="pop-title">Launching Coming Soon!</div>
+            <div class="popup-desc" id="pop-desc">यह ऐप अभी डेवलपमेंट फेज़ में है। हम आपके लिए बेहतरीन और प्रीमियम फीचर्स बहुत जल्द लाइव लॉन्च कर रहे हैं!</div>
+            <button class="popup-close-btn" onclick="closePopup()" id="pop-btn">ठीक है</button>
+        </div>
+    </div>
+
+    <script>
+        // UI Complete Translation Registry
+        const translations = {
+            hi: {
+                nextBtn: "आगे बढ़ें",
+                f1Title: "सबके लिए काम और कमाई",
+                f1Desc: "चाहे आप कम पढ़े-लिखे हों, अनपढ़ हों या शिक्षित, यह ऐप सभी को उनकी सुविधा के अनुसार पार्ट-टाइम या फुल-टाइम काम ढूंढने में मदद करता है। यहाँ रोज़ाना बेहतरीन कमाई के अवसर मिलते हैं।",
+                f1BTitle: "कोई न्यूनतम शिक्षा अनिवार्य नहीं",
+                f1BText: "बिना किसी डिग्री के भी सीधे अपनी स्किल्स के दम पर काम ढूंढना शुरू करें।",
+                f2Title: "सिर्फ हुनर की कद्र",
+                f2Desc: "यहाँ आपकी डिग्री मायने नहीं रखती, सिर्फ आपका हुनर (Skills) मायने रखता है। प्लंबर, इलेक्ट्रिशियन, कारपेंटर, या पेंटर - आपका काम ही आपकी असली पहचान है।",
+                f2BTitle: "हुनरमंद भारत, आत्मनिर्भर भारत",
+                f2BText: "डायरेक्ट कस्टमर और बड़ी कंपनियों से डायरेक्ट आर्डर प्राप्त करें।",
+                f3Title: "ब्लू टिक (Blue Tick) प्रोफाइल",
+                f3CardTitle: "вериfाइड ब्लू टिक मेंबर",
+                f3CardDesc: "जब आप अपनी प्रोफाइल पर ब्लू टिक वेरिफिकेशन एक्टिवेट करते हैं, तो कोई भी हायरर (Hirer) सर्च करेगा तो आपका नाम सबसे ऊपर (1st position) पर आएगा। इससे जॉब मिलने के चांस सबसे ज़्यादा होंगे!",
+                f3BTitle: "3 गुना ज्यादा काम के मौके",
+                f3BText: "टॉप लिस्टिंग पर आने से कस्टमर सीधे आपको कॉल करेंगे।",
+                dlTitle: "अभी ऐप डाउनलोड करें",
+                dlSubtitle: "अपने हुनर को अपनी कमाई का जरिया बनाएं",
+                btnDlApk: "डाउनलोड एंड्रॉइड APK",
+                popTitle: "Launching Coming Soon!",
+                popDesc: "यह एप्लिकेशन जल्द ही लाइव होने जा रहा है! हम आपके अनुभव को शानदार बनाने के लिए आख़िरी तैयारियों में जुटे हैं। हमारे साथ जुड़े रहने के लिए धन्यवाद!",
+                popBtn: "ठीक है"
+            },
+            en: {
+                nextBtn: "Next",
+                f1Title: "Jobs for Everyone",
+                f1Desc: "Whether you are uneducated, semi-educated, or highly qualified, this app provides part-time or full-time earning opportunities for everyone with daily high payouts.",
+                f1BTitle: "No Degree Required",
+                f1BText: "Start earning immediately using your manual or professional skills.",
+                f2Title: "Only Skills Matter",
+                f2Desc: "Degrees don't matter here; your skill is your power. Plumbers, Electricians, Carpenters, or Painters - your craftsmanship is all that defines you.",
+                f2BTitle: "Skilled India, Self-Reliant India",
+                f2BText: "Get direct booking orders from customers and local recruiters.",
+                f3Title: "Blue Tick Profile Feature",
+                f3CardTitle: "Verified Blue Tick Member",
+                f3CardDesc: "When you get the Blue Tick verification, whenever a Hirer searches for workers, your name will automatically rank #1. This increases your opportunity chances instantly!",
+                f3BTitle: "3X More Opportunities",
+                f3BText: "Ranking on top brings direct phone calls and bookings to your mobile.",
+                dlTitle: "Download App Now",
+                dlSubtitle: "Convert your valuable skills into daily earnings",
+                btnDlApk: "Download Android APK",
+                popTitle: "Launching Coming Soon!",
+                popDesc: "This application is currently in its final preparation cycle. We are deployment-ready and will release globally very soon! Thank you for your patience.",
+                popBtn: "Got it"
+            },
+            ur: {
+                nextBtn: "آگے بڑھیں",
+                f1Title: "سب کے لیے کام اور کمائی",
+                f1Desc: "چاہے آپ کم پڑھے لکھے ہوں، ان پڑھ ہوں یا تعلیم یافتہ، یہ ایپ سب کو ان کی سہولت کے مطابق پارٹ ٹائم یا فل ٹائم کام تلاش کرنے میں مدد کرتی ہے۔",
+                f1BTitle: "ڈگری کی کوئی ضرورت نہیں",
+                f1BText: "کسی بھی ڈگری کے بغیر براہ راست اپنے ہنر کی بنیاد پر کمانا شروع کریں۔",
+                f2Title: "صرف ہنر کی قدر",
+                f2Desc: "یہاں آپ کی ڈگری کوئی معنی نہیں رکھتی، صرف آپ کا ہنر (Skills) اہم ہے۔ پلمبر، الیکٹریشن، کارپینٹر، یا پینٹر - آپ کا کام ہی آپ کی پہچان ہے۔",
+                f2BTitle: "ہنرمند اور خود انحصار",
+                f2BText: "براہ راست کسٹمرز اور بڑی کمپنیوں سے آرڈرز حاصل کریں۔",
+                f3Title: "بلیو ٹک (Blue Tick) پروفائل",
+                f3CardTitle: "تصدیق شدہ بلیو ٹک ممبر",
+                f3CardDesc: "جب آپ اپنی پروفائل پر بلیو ٹک ویریفیکیشن حاصل کرتے ہیں، تو کوئی بھی ہائرر سرچ کرے گا تو آپ کا نام سب سے اوپر (پہلی پوزیشن) پر آئے گا، جس سے کام ملنے کے مواقع بڑھ جائیں گے!",
+                f3BTitle: "3 گنا زیادہ کام کے مواقع",
+                f3BText: "ٹاپ لسٹنگ میں آنے سے کسٹمرز آپ کو براہ راست کال کریں گے۔",
+                dlTitle: "ابھی ایپ ڈاؤن لوڈ کریں",
+                dlSubtitle: "آج ہی اپنا پیشہ ورانہ سفر شروع کریں",
+                btnDlApk: "اینڈرائیڈ APK ڈاؤن لوڈ کریں",
+                popTitle: "بہت جلد آرہا ہے!",
+                popDesc: "یہ ایپلیکیشن فی الحال آخری تیاری کے مراحل میں ہے۔ ہم بہت جلد لائیو ہونے جا رہے ہیں! آپ کا شکریہ۔",
+                popBtn: "ٹھیک ہے"
+            },
+            bn: {
+                nextBtn: "आगे बढ़ুন",
+                f1Title: "সবার জন্য কাজ ও উপার্জন",
+                f1Desc: "আপনি কম শিক্ষিত, অশিক্ষিত বা উচ্চশিক্ষিত যাই হোন না কেন, এই অ্যাপটি সবাইকে তাদের সুবিধামতো পার্ট-টাইম বা ফুল-টাইম কাজ খুঁজে পেতে সাহায্য করে।",
+                f1BTitle: "কোনো ডিগ্রির প্রয়োজন নেই",
+                f1BText: "কোনো ডিগ্রি ছাড়াই সরাসরি নিজের দক্ষতার জোরে কাজ শুরু করুন।",
+                f2Title: "শুধুমাত্র দক্ষতার মূল্যায়ন",
+                f2Desc: "এখানে আপনার ডিগ্রি কোনো ম্যাটার করে না, শুধুমাত্র আপনার দক্ষতা (Skills) ম্যাটার করে। প্লাম্বার, ইলেকট্রিশিয়ান, ছুতার বা পেইন্টার - আপনার কাজই আপনার আসল পরিচয়।",
+                f2BTitle: "দক্ষ ও স্বনির্ভর ভারত",
+                f2BText: "সরাসরি কাস্টমার এবং বড় কোম্পানি থেকে কাজের অর্ডার পান।",
+                f3Title: "ব্লু টিক (Blue Tick) প্রোফাইল",
+                f3CardTitle: "ভেরিফাইড ব্লু টিক মেম্বার",
+                f3CardDesc: "যখন আপনি প্রোফাইলে ব্লু টিক ভেরিফিকেশন অ্যাক্টিভেট করবেন, তখন কোনো হায়ারর (Hirer) সার্চ করলে আপনার নাম সবার প্রথমে (1st Position) আসবে। এতে কাজ পাওয়ার সুযোগ অনেক বাড়বে!",
+                f3BTitle: "৩ গুণ বেশি কাজের সুযোগ",
+                f3BText: "টপ লিস্টে আসার কারণে কাস্টমাররা সরাসরি আপনাকে কল করবে।",
+                dlTitle: "এখনই অ্যাপ ডাউনলোড করুন",
+                dlSubtitle: "আপনার দক্ষতাকে উপার্জনের মাধ্যম বানিয়ে নিন",
+                btnDlApk: "অ্যান্ড্রয়েড APK ডাউনলোড করুন",
+                popTitle: "খুব শীঘ্রই আসছে!",
+                popDesc: "এই অ্যাপ্লিকেশনটি বর্তমানে চূড়ান্ত প্রস্তুতির অধীনে রয়েছে। আমরা খুব শীঘ্রই লাইভ চালু করতে যাচ্ছি! ধন্যবাদ।",
+                popBtn: "ঠিক আছে"
+            }
+        };
+
+        let selectedLang = 'hi';
+
+        // Splash Timeout configuration (2 Seconds)
+        setTimeout(() => {
+            document.getElementById('splash-screen').classList.remove('active');
+            document.getElementById('lang-screen').classList.add('active');
+        }, 2000);
+
+        function selectLanguage(lang) {
+            selectedLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            document.querySelector('.next-txt').innerText = translations[lang].nextBtn;
+            applyTranslations(lang);
+        }
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            
+            // Screen 1
+            document.getElementById('f1-title').innerText = t.f1Title;
+            document.getElementById('f1-desc').innerText = t.f1Desc;
+            document.getElementById('f1-b-title').innerText = t.f1BTitle;
+            document.getElementById('f1-b-text').innerText = t.f1BText;
+
+            // Screen 2
+            document.getElementById('f2-title').innerText = t.f2Title;
+            document.getElementById('f2-desc').innerText = t.f2Desc;
+            document.getElementById('f2-b-title').innerText = t.f2BTitle;
+            document.getElementById('f2-b-text').innerText = t.f2BText;
+
+            // Screen 3
+            document.getElementById('f3-title').innerText = t.f3Title;
+            document.getElementById('f3-card-title').innerText = t.f3CardTitle;
+            document.getElementById('f3-card-desc').innerText = t.f3CardDesc;
+            document.getElementById('f3-b-title').innerText = t.f3BTitle;
+            document.getElementById('f3-b-text').innerText = t.f3BText;
+
+            // Download & Popups
+            document.getElementById('dl-title').innerText = t.dlTitle;
+            document.getElementById('dl-subtitle').innerText = t.dlSubtitle;
+            document.getElementById('btn-dl-apk').innerText = t.btnDlApk;
+            document.getElementById('pop-title').innerText = t.popTitle;
+            document.getElementById('pop-desc').innerText = t.popDesc;
+            document.getElementById('pop-btn').innerText = t.popBtn;
+        }
+
+        function navigate(screenIndex) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const screens = ['splash-screen', 'lang-screen', 'feature1-screen', 'feature2-screen', 'feature3-screen', 'download-screen'];
+            document.getElementById(screens[screenIndex + 1]).classList.add('active');
+        }
+
+        // Trigger Coming Soon Overlay Custom Modal Alert System
+        function showComingSoon() {
+            const popup = document.getElementById('coming-soon-popup');
+            popup.style.display = 'flex';
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('coming-soon-popup');
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+
+        // Init Setup
+        applyTranslations('hi');
+    </script>
+</body>
+</html>
